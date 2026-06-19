@@ -1,4 +1,6 @@
 using UnityEngine;
+// 1. 新しいInput Systemを使うための宣言を追加
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,11 +31,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         GroundCheck();
-
         Jump();
-
         Attack();
-
         AnimatorUpdate();
     }
 
@@ -48,17 +47,18 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGround)
+        // 2. 新しいインプットシステムの書き方に変更（スペースキー）
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame && isGround)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
-
             animator.SetTrigger("Jump");
         }
     }
 
     void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        // 3. 新しいインプットシステムの書き方に変更（左Shiftキー）
+        if (Keyboard.current != null && Keyboard.current.leftShiftKey.wasPressedThisFrame)
         {
             animator.SetTrigger("Attack");
         }
@@ -69,13 +69,11 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("IsGround", isGround);
     }
 
-    // AnimationEventから呼ぶ
     public void AttackStart()
     {
         attackHitBox.SetActive(true);
     }
 
-    // AnimationEventから呼ぶ
     public void AttackEnd()
     {
         attackHitBox.SetActive(false);
