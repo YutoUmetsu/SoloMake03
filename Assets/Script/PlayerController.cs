@@ -57,10 +57,16 @@ public class PlayerController : MonoBehaviour
 
     void Attack()
     {
-        // 3. 新しいインプットシステムの書き方に変更（左Shiftキー）
-        if (Keyboard.current != null && Keyboard.current.leftShiftKey.wasPressedThisFrame)
+        // 左Shiftから「J」キーに変更しました
+        if (Keyboard.current != null && Keyboard.current.jKey.wasPressedThisFrame)
         {
             animator.SetTrigger("Attack");
+
+            // 前回のスコア加算テストを残す場合はここ
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.AddScore(100);
+            }
         }
     }
 
@@ -77,5 +83,14 @@ public class PlayerController : MonoBehaviour
     public void AttackEnd()
     {
         attackHitBox.SetActive(false);
+    }
+    // 敵から呼ばれるダメージ処理
+    public void TakeDamage()
+    {
+        Debug.Log("プレイヤーがダメージを受けました！");
+
+        // 【今後拡張可能】HPを減らす、ダメージアニメーションを再生するなど
+        // 今回は仮に、食らったら少しノックバック（上に跳ねる）させてみます
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x * -0.5f, 5f);
     }
 }
