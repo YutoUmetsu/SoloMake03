@@ -19,13 +19,19 @@ public class NormalEnemy : MonoBehaviour
 
     void FixedUpdate()
     {
+        // 左右の移動速度を計算
         float direction = moveLeft ? -1f : 1f;
         rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
+
+        // ★【追加】x座標が -10 未満になったら自壊する
+        if (transform.position.x < -10f)
+        {
+            Debug.Log($"{gameObject.name} が画面外（x < -10）に出たため、自動消滅しました。");
+            Destroy(gameObject);
+        }
     }
 
-    // ★【変更】OnTriggerEnter2D（PAttackの判定）は不要になったので削除しました
-
-    // プレイヤー自身にぶつかった時の判定（これは残す）
+    // プレイヤー自身にぶつかった時の判定
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -38,7 +44,7 @@ public class NormalEnemy : MonoBehaviour
         }
     }
 
-    // ★【変更】AttackHitBoxから呼び出せるように「public」にしました
+    // AttackHitBoxから呼び出される死亡処理
     public void Die()
     {
         if (ScoreManager.Instance != null)
